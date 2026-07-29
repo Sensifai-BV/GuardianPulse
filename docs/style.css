@@ -1,0 +1,248 @@
+:root {
+    --primary: #0056b3;
+    --secondary: #00A699;
+    --accent: #FF5A5F;
+    --bg-dark: #121212;
+    --card-bg: #1e1e1e;
+    --text-main: #f0f0f0;
+    --text-muted: #a0a0a0;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.dashboard-container {
+    max-width: 1000px;
+    width: 100%;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 24px;
+    color: var(--secondary);
+}
+
+header p {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.status-badge {
+    padding: 8px 16px;
+    border-radius: 20px;
+    background-color: rgba(0, 166, 153, 0.2);
+    color: var(--secondary);
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.status-badge.alert {
+    background-color: rgba(255, 90, 95, 0.2);
+    color: var(--accent);
+    animation: pulse 1s infinite;
+}
+
+.card {
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.control-panel h2 {
+    margin-top: 0;
+    font-size: 18px;
+}
+
+.button-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s;
+    background-color: #333;
+    color: white;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn.active { background-color: var(--secondary); }
+.btn.warning { background-color: #f39c12; }
+.btn.danger { background-color: var(--accent); }
+
+.sensors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.sensor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.sensor-header h3 {
+    margin: 0;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sensor-header .value {
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--secondary);
+}
+
+.sensor-header .value.danger {
+    color: var(--accent);
+}
+
+/* EKG Line */
+.ekg-container {
+    width: 100%;
+    height: 80px;
+    overflow: hidden;
+}
+
+.ekg-line {
+    width: 100%;
+    height: 100%;
+}
+
+.ekg-line polyline {
+    fill: none;
+    stroke: var(--secondary);
+    stroke-width: 3;
+    stroke-linejoin: round;
+}
+
+.ekg-line.danger polyline {
+    stroke: var(--accent);
+}
+
+/* Audio Bars */
+.audio-bars {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 6px;
+    height: 80px;
+}
+
+.bar {
+    width: 12px;
+    background-color: var(--secondary);
+    border-radius: 6px 6px 0 0;
+    transition: height 0.1s ease;
+}
+
+.bar.danger {
+    background-color: var(--accent);
+}
+
+/* Tamper Icon */
+.tamper-icon {
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 48px;
+    color: var(--secondary);
+    transition: all 0.3s;
+}
+
+.tamper-icon.danger {
+    color: var(--accent);
+    animation: shake 0.5s infinite;
+}
+
+/* Event Log */
+.event-log {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.event-log li {
+    padding: 12px 0;
+    border-bottom: 1px solid #333;
+    font-size: 14px;
+}
+
+.event-log li:last-child {
+    border-bottom: none;
+}
+
+.event-log .time {
+    color: var(--secondary);
+    font-weight: bold;
+    margin-right: 12px;
+}
+
+.event-log .alert-text {
+    color: var(--accent);
+    font-weight: bold;
+}
+
+/* Animations */
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}

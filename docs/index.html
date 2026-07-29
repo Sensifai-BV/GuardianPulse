@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guardian Pulse | Live Demo</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header -->
+        <header>
+            <div class="logo-container">
+                <img src="logo.jpg" alt="Guardian Pulse Logo" class="logo">
+                <div>
+                    <h1>Guardian Pulse</h1>
+                    <p>Live Sensor Fusion Dashboard</p>
+                </div>
+            </div>
+            <div class="status-badge" id="systemStatus">
+                <i class="fa-solid fa-shield-halved"></i> SYSTEM ACTIVE
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main>
+            <!-- Control Panel -->
+            <section class="control-panel card">
+                <h2><i class="fa-solid fa-gamepad"></i> Simulation Controls</h2>
+                <p>Use these controls to simulate real-world events and observe the system's automated response.</p>
+                <div class="button-group">
+                    <button id="btnNormal" class="btn active">Normal State</button>
+                    <button id="btnSpike" class="btn warning">Simulate Play (HR Spike)</button>
+                    <button id="btnAttack" class="btn danger">Simulate Attack (Tamper + Audio)</button>
+                </div>
+            </section>
+
+            <!-- Sensor Visualizations -->
+            <div class="sensors-grid">
+                <!-- Heart Rate -->
+                <div class="sensor-card card" id="cardHR">
+                    <div class="sensor-header">
+                        <h3><i class="fa-solid fa-heart-pulse"></i> Heart Rate</h3>
+                        <span class="value" id="valHR">72 BPM</span>
+                    </div>
+                    <div class="ekg-container">
+                        <svg viewBox="0 0 500 100" class="ekg-line" preserveAspectRatio="none">
+                            <polyline id="ekgPolyline" points="0,50 50,50 60,20 70,80 80,50 500,50" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Audio Level -->
+                <div class="sensor-card card" id="cardAudio">
+                    <div class="sensor-header">
+                        <h3><i class="fa-solid fa-microphone-lines"></i> Audio (Ambient)</h3>
+                        <span class="value" id="valAudio">45 dB</span>
+                    </div>
+                    <div class="audio-bars">
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                    </div>
+                </div>
+                
+                <!-- Tamper Sensor -->
+                <div class="sensor-card card" id="cardTamper">
+                    <div class="sensor-header">
+                        <h3><i class="fa-solid fa-link"></i> Tamper Sensor</h3>
+                        <span class="value" id="valTamper">Attached</span>
+                    </div>
+                    <div class="tamper-icon" id="iconTamper">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Escalation Log -->
+            <section class="log-section card">
+                <h2><i class="fa-solid fa-list"></i> Escalation Log</h2>
+                <ul id="eventLog" class="event-log">
+                    <li><span class="time">Now</span> System initialized and monitoring normally. False Positive Rate: 3.2%</li>
+                </ul>
+            </section>
+        </main>
+    </div>
+
+    <!-- Alarm Audio -->
+    <audio id="alarmSound" src="https://assets.mixkit.co/sfx/preview/mixkit-warning-alarm-buzzer-991.mp3" loop></audio>
+
+    <script src="app.js"></script>
+</body>
+</html>
