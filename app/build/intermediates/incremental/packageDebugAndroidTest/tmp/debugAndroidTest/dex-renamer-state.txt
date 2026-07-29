@@ -1,0 +1,7 @@
+#Wed Jul 29 11:57:33 IRST 2026
+base.0=/Users/apple.world/Developer/Sensifai/Aegis/app/build/intermediates/dex/debugAndroidTest/mergeProjectDexDebugAndroidTest/0/classes.dex
+base.1=/Users/apple.world/Developer/Sensifai/Aegis/app/build/intermediates/dex/debugAndroidTest/mergeProjectDexDebugAndroidTest/2/classes.dex
+path.0=0/classes.dex
+path.1=2/classes.dex
+renamed.0=classes.dex
+renamed.1=classes2.dex

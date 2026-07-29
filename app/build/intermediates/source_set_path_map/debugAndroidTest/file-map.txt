@@ -1,0 +1,4 @@
+com.guardianpulse.prototype.test.app-androidTest-0 /Users/apple.world/Developer/Sensifai/Aegis/app/build/generated/res/resValues/androidTest/debug
+com.guardianpulse.prototype.test.app-mergeDebugAndroidTestResources-1 /Users/apple.world/Developer/Sensifai/Aegis/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
+com.guardianpulse.prototype.test.app-mergeDebugAndroidTestResources-2 /Users/apple.world/Developer/Sensifai/Aegis/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
+com.guardianpulse.prototype.test.app-merged_res-3 /Users/apple.world/Developer/Sensifai/Aegis/app/build/intermediates/merged_res/debugAndroidTest
