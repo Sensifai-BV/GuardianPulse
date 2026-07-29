@@ -1,65 +1,95 @@
 :root {
-    --primary: #0056b3;
+    /* Coral Stay Palette */
+    --primary: #FF5A5F;
+    --primary-hover: #E04E52;
     --secondary: #00A699;
-    --accent: #FF5A5F;
-    --bg-dark: #121212;
-    --card-bg: #1e1e1e;
-    --text-main: #f0f0f0;
-    --text-muted: #a0a0a0;
+    --neutral: #767676;
+    --bg-main: #FFFFFF;
+    --surface: #F7F7F7;
+    --text-primary: #222222;
+    --text-secondary: #717171;
+    --border: #DDDDDD;
+    --success: #008A05;
+    --warning: #E07912;
+    --error: #C13515;
+
+    /* Elevations */
+    --shadow-1: 0 1px 2px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+    --shadow-2: 0 2px 4px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.12);
+    --shadow-3: 0 6px 20px rgba(0,0,0,0.12), 0 16px 40px rgba(0,0,0,0.16);
 }
 
 body {
     margin: 0;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    background-color: var(--bg-dark);
-    color: var(--text-main);
-    display: flex;
-    justify-content: center;
-    padding: 20px;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--surface);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
 }
 
-.dashboard-container {
+/* Typography */
+h1, h2, h3 {
+    font-family: 'Nunito Sans', sans-serif;
+    color: var(--text-primary);
+    margin-top: 0;
+}
+
+h1 { font-size: 32px; font-weight: 800; tracking: -0.01em; margin: 0; }
+h2 { font-size: 24px; font-weight: 700; margin-bottom: 16px; }
+h3 { font-size: 18px; font-weight: 700; margin-bottom: 0; }
+
+.icon-accent { color: var(--primary); }
+.icon-secondary { color: var(--secondary); }
+
+/* Navigation */
+.top-nav {
+    height: 80px;
+    background-color: var(--bg-main);
+    box-shadow: var(--shadow-1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+}
+
+.nav-container {
     max-width: 1000px;
     width: 100%;
-}
-
-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
 }
 
-.logo-container {
+.logo-group {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
 }
 
 .logo {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
 }
 
-h1 {
-    margin: 0;
+.brand-name {
+    font-family: 'Nunito Sans', sans-serif;
     font-size: 24px;
-    color: var(--secondary);
-}
-
-header p {
-    margin: 0;
-    font-size: 14px;
-    color: var(--text-muted);
+    font-weight: 800;
+    color: var(--primary);
 }
 
 .status-badge {
     padding: 8px 16px;
-    border-radius: 20px;
-    background-color: rgba(0, 166, 153, 0.2);
+    border-radius: 9999px;
+    background-color: rgba(0, 166, 153, 0.1);
     color: var(--secondary);
-    font-weight: bold;
+    font-weight: 700;
+    font-size: 14px;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -67,24 +97,35 @@ header p {
 }
 
 .status-badge.alert {
-    background-color: rgba(255, 90, 95, 0.2);
-    color: var(--accent);
+    background-color: rgba(193, 53, 21, 0.1);
+    color: var(--error);
     animation: pulse 1s infinite;
 }
 
+.dashboard-container {
+    max-width: 1000px;
+    width: 100%;
+    margin: 40px auto;
+    padding: 0 24px;
+}
+
+/* Cards */
 .card {
-    background-color: var(--card-bg);
-    border-radius: 16px;
+    background-color: var(--bg-main);
+    border-radius: 12px;
+    border: 1px solid var(--border);
     padding: 24px;
     margin-bottom: 24px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    box-shadow: var(--shadow-1);
+    transition: all 0.2s ease;
 }
 
-.control-panel h2 {
-    margin-top: 0;
-    font-size: 18px;
+.card:hover {
+    box-shadow: var(--shadow-2);
+    transform: translateY(-2px);
 }
 
+/* Buttons */
 .button-group {
     display: flex;
     gap: 12px;
@@ -93,25 +134,48 @@ header p {
 }
 
 .btn {
-    padding: 12px 24px;
-    border: none;
+    padding: 14px 24px;
     border-radius: 8px;
-    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
     font-weight: 600;
-    font-size: 14px;
-    transition: all 0.2s;
-    background-color: #333;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
+}
+
+.btn-primary {
+    background-color: var(--primary);
     color: white;
 }
 
-.btn:hover {
-    transform: translateY(-2px);
+.btn-primary:hover, .btn-primary.active {
+    background-color: var(--primary-hover);
 }
 
-.btn.active { background-color: var(--secondary); }
-.btn.warning { background-color: #f39c12; }
-.btn.danger { background-color: var(--accent); }
+.btn-secondary {
+    background-color: transparent;
+    border: 1px solid var(--text-primary);
+    color: var(--text-primary);
+}
 
+.btn-secondary:hover, .btn-secondary.active {
+    background-color: var(--surface);
+}
+
+.btn.danger {
+    background-color: var(--error);
+    color: white;
+    border: none;
+}
+
+.btn.warning {
+    background-color: var(--warning);
+    color: white;
+    border: none;
+}
+
+/* Sensors Grid */
 .sensors-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -122,25 +186,30 @@ header p {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .sensor-header h3 {
-    margin: 0;
-    font-size: 16px;
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
 .sensor-header .value {
-    font-size: 20px;
-    font-weight: bold;
-    color: var(--secondary);
+    font-size: 22px;
+    font-weight: 700;
+    font-family: 'Nunito Sans', sans-serif;
+    color: var(--text-primary);
 }
 
-.sensor-header .value.danger {
-    color: var(--accent);
+.value.danger { color: var(--error); }
+.value.success { color: var(--success); }
+.value.warning { color: var(--warning); }
+
+.sensor-footer {
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--text-secondary);
 }
 
 /* EKG Line */
@@ -148,6 +217,8 @@ header p {
     width: 100%;
     height: 80px;
     overflow: hidden;
+    background-color: var(--surface);
+    border-radius: 8px;
 }
 
 .ekg-line {
@@ -157,14 +228,12 @@ header p {
 
 .ekg-line polyline {
     fill: none;
-    stroke: var(--secondary);
+    stroke: var(--primary);
     stroke-width: 3;
     stroke-linejoin: round;
 }
 
-.ekg-line.danger polyline {
-    stroke: var(--accent);
-}
+.ekg-line.danger polyline { stroke: var(--error); }
 
 /* Audio Bars */
 .audio-bars {
@@ -173,18 +242,19 @@ header p {
     align-items: flex-end;
     gap: 6px;
     height: 80px;
+    background-color: var(--surface);
+    border-radius: 8px;
+    padding: 8px;
 }
 
 .bar {
-    width: 12px;
+    width: 16px;
     background-color: var(--secondary);
-    border-radius: 6px 6px 0 0;
-    transition: height 0.1s ease;
+    border-radius: 9999px; /* Pill shaped */
+    transition: height 0.1s ease, background-color 0.3s;
 }
 
-.bar.danger {
-    background-color: var(--accent);
-}
+.bar.danger { background-color: var(--error); }
 
 /* Tamper Icon */
 .tamper-icon {
@@ -192,13 +262,15 @@ header p {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 48px;
+    font-size: 40px;
     color: var(--secondary);
+    background-color: var(--surface);
+    border-radius: 8px;
     transition: all 0.3s;
 }
 
 .tamper-icon.danger {
-    color: var(--accent);
+    color: var(--error);
     animation: shake 0.5s infinite;
 }
 
@@ -207,14 +279,16 @@ header p {
     list-style: none;
     padding: 0;
     margin: 0;
-    max-height: 200px;
+    max-height: 250px;
     overflow-y: auto;
 }
 
 .event-log li {
-    padding: 12px 0;
-    border-bottom: 1px solid #333;
-    font-size: 14px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 16px;
+    display: flex;
+    align-items: flex-start;
 }
 
 .event-log li:last-child {
@@ -222,14 +296,20 @@ header p {
 }
 
 .event-log .time {
-    color: var(--secondary);
-    font-weight: bold;
-    margin-right: 12px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 14px;
+    margin-right: 16px;
+    min-width: 60px;
+}
+
+.event-log .log-msg {
+    color: var(--text-primary);
 }
 
 .event-log .alert-text {
-    color: var(--accent);
-    font-weight: bold;
+    color: var(--error);
+    font-weight: 600;
 }
 
 /* Animations */

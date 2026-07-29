@@ -4,36 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Guardian Pulse | Live Demo</title>
+    
+    <!-- Google Fonts: Nunito Sans & DM Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,700;6..12,800&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="dashboard-container">
-        <!-- Header -->
-        <header>
-            <div class="logo-container">
+    <!-- Top Navigation Bar -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <div class="logo-group">
                 <img src="logo.jpg" alt="Guardian Pulse Logo" class="logo">
-                <div>
-                    <h1>Guardian Pulse</h1>
-                    <p>Live Sensor Fusion Dashboard</p>
-                </div>
+                <span class="brand-name">Guardian Pulse</span>
             </div>
             <div class="status-badge" id="systemStatus">
                 <i class="fa-solid fa-shield-halved"></i> SYSTEM ACTIVE
             </div>
-        </header>
+        </div>
+    </nav>
 
+    <div class="dashboard-container">
         <!-- Main Content -->
         <main>
             <!-- Control Panel -->
             <section class="control-panel card">
-                <h2><i class="fa-solid fa-gamepad"></i> Simulation Controls</h2>
-                <p>Use these controls to simulate real-world events and observe the system's automated response.</p>
+                <h2>Simulation Controls</h2>
+                <p>Observe how Guardian Pulse accurately responds to real-world scenarios.</p>
                 <div class="button-group">
-                    <button id="btnNormal" class="btn active">Normal State</button>
-                    <button id="btnSpike" class="btn warning">Simulate Play (HR Spike)</button>
-                    <button id="btnAttack" class="btn danger">Simulate Attack (Tamper + Audio)</button>
+                    <button id="btnNormal" class="btn btn-primary active">Normal State</button>
+                    <button id="btnSpike" class="btn btn-secondary">Simulate Play</button>
+                    <button id="btnAttack" class="btn btn-secondary">Simulate Tamper</button>
                 </div>
             </section>
 
@@ -42,7 +47,7 @@
                 <!-- Heart Rate -->
                 <div class="sensor-card card" id="cardHR">
                     <div class="sensor-header">
-                        <h3><i class="fa-solid fa-heart-pulse"></i> Heart Rate</h3>
+                        <h3><i class="fa-solid fa-heart-pulse icon-accent"></i> Heart Rate</h3>
                         <span class="value" id="valHR">72 BPM</span>
                     </div>
                     <div class="ekg-container">
@@ -50,12 +55,13 @@
                             <polyline id="ekgPolyline" points="0,50 50,50 60,20 70,80 80,50 500,50" />
                         </svg>
                     </div>
+                    <div class="sensor-footer">Real-time physiological tracking</div>
                 </div>
 
                 <!-- Audio Level -->
                 <div class="sensor-card card" id="cardAudio">
                     <div class="sensor-header">
-                        <h3><i class="fa-solid fa-microphone-lines"></i> Audio (Ambient)</h3>
+                        <h3><i class="fa-solid fa-microphone-lines icon-secondary"></i> Ambient Audio</h3>
                         <span class="value" id="valAudio">45 dB</span>
                     </div>
                     <div class="audio-bars">
@@ -65,25 +71,27 @@
                         <div class="bar"></div>
                         <div class="bar"></div>
                     </div>
+                    <div class="sensor-footer">Privacy-safe decibel monitoring</div>
                 </div>
                 
                 <!-- Tamper Sensor -->
                 <div class="sensor-card card" id="cardTamper">
                     <div class="sensor-header">
-                        <h3><i class="fa-solid fa-link"></i> Tamper Sensor</h3>
-                        <span class="value" id="valTamper">Attached</span>
+                        <h3><i class="fa-solid fa-link icon-secondary"></i> Tamper Sensor</h3>
+                        <span class="value success" id="valTamper">Attached</span>
                     </div>
                     <div class="tamper-icon" id="iconTamper">
                         <i class="fa-solid fa-lock"></i>
                     </div>
+                    <div class="sensor-footer">Device proximity & light detection</div>
                 </div>
             </div>
 
             <!-- Escalation Log -->
             <section class="log-section card">
-                <h2><i class="fa-solid fa-list"></i> Escalation Log</h2>
+                <h2>Escalation Log</h2>
                 <ul id="eventLog" class="event-log">
-                    <li><span class="time">Now</span> System initialized and monitoring normally. False Positive Rate: 3.2%</li>
+                    <li><span class="time">Now</span> <span class="log-msg">System initialized and monitoring normally. False Positive Rate: 3.2%</span></li>
                 </ul>
             </section>
         </main>
