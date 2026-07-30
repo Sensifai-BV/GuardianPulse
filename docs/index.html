@@ -62,7 +62,10 @@
                 <div class="sensor-card card" id="cardAudio">
                     <div class="sensor-header">
                         <h3><i class="fa-solid fa-microphone-lines icon-secondary"></i> Ambient Audio</h3>
-                        <span class="value" id="valAudio">45 dB</span>
+                        <div style="text-align:right">
+                            <span class="value" id="valAudio">45 dB</span><br>
+                            <span class="audio-label label-safe" id="valAudioLabel">AMBIENT</span>
+                        </div>
                     </div>
                     <div class="audio-bars">
                         <div class="bar"></div>
@@ -71,7 +74,7 @@
                         <div class="bar"></div>
                         <div class="bar"></div>
                     </div>
-                    <div class="sensor-footer">Privacy-safe decibel monitoring</div>
+                    <div class="sensor-footer">Privacy-safe decibel monitoring + event classification</div>
                 </div>
                 
                 <!-- Tamper Sensor -->

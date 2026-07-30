@@ -11,11 +11,14 @@
 \usepackage{hyperref}
 \usepackage{titlesec}
 \usepackage{enumitem}
+\usepackage{array}
 
 % Colors
 \definecolor{primary}{HTML}{0056b3}
 \definecolor{secondary}{HTML}{00A699}
 \definecolor{accent}{HTML}{FF5A5F}
+\definecolor{warningbg}{HTML}{FFF3CD}
+\definecolor{warningborder}{HTML}{E07912}
 
 % Section styling
 \titleformat{\section}
@@ -26,68 +29,147 @@
 % Custom environment for highlights
 \newtcolorbox{highlightbox}{colback=secondary!5,colframe=secondary,boxrule=0.5pt,arc=4pt,left=10pt,right=10pt,top=10pt,bottom=10pt}
 
+\newtcolorbox{warningbox}{colback=warningbg,colframe=warningborder,boxrule=0.5pt,arc=4pt,left=10pt,right=10pt,top=10pt,bottom=10pt}
+
 \begin{document}
 
 \begin{center}
     \vspace*{1cm}
     {\Huge \textbf{\color{primary} Guardian Pulse}} \\[0.5cm]
     {\LARGE Early Warning and Response System for Child Protection} \\[0.5cm]
-    {\large \textit{Technical Proposal \& Empirical Performance Metrics}} \\[0.5cm]
+    {\large \textit{Technical Proposal \& Empirical Performance Metrics}} \\[0.3cm]
+    {\normalsize \textit{Prototype v0.9.1 --- Submitted to MSF Call 29}} \\[0.5cm]
     \rule{\textwidth}{1pt}
 \end{center}
 
-\vspace{1cm}
+\vspace{0.8cm}
 
 \section{Executive Summary}
-\textbf{Guardian Pulse} is a non-intrusive, multi-modal early warning system designed for deployment on smart devices and wearables. It operates continuously in the background to safeguard children from abuse without placing the burden of self-reporting on the victim. By leveraging advanced \textbf{Sensor Fusion Technology}, Guardian Pulse aligns perfectly with the Ministry of Social and Family Development's (MSF) Call 29, ensuring precise, real-time interventions with minimal false positives.
+\textbf{Guardian Pulse} is a non-intrusive, multi-modal early warning system designed for deployment on consumer Android devices and wearables. It operates continuously in the background to safeguard children without placing the burden of self-reporting on the victim. By leveraging advanced \textbf{Sensor Fusion} and on-device \textbf{Audio Event Classification}, Guardian Pulse provides precise, real-time alerts with minimal false positives, in full alignment with Singapore's PDPA.
 
 \section{Technical Approach: Multi-Modal Monitoring}
-To ensure robust detection while maintaining strict PDPA compliance and family privacy, Guardian Pulse triangulates multiple data streams without recording raw audio conversations.
 
+\subsection{Physiological Stress Monitoring}
+Continuous tracking of Heart Rate (HR), establishing a personalised baseline for each child and detecting sustained, stress-induced deviations. A single elevated reading is never sufficient to trigger an alert; the system requires sustained anomaly over a configurable time window.
+
+\subsection{On-Device Audio Event Classification (Point 5)}
+\begin{warningbox}
+\textbf{Important:} Measuring only decibel levels is insufficient. A television, children playing, or a dropped object can all reach high decibel levels. Guardian Pulse therefore classifies audio into event categories on-device, using a rule-based classifier (prototype) designed to be replaced by a full YAMNet/openSMILE model in production.
+\end{warningbox}
+
+\vspace{0.3cm}
+The on-device Audio Event Classifier analyses the amplitude and rate-of-change of ambient sound in real-time and assigns one of the following labels:
 \begin{itemize}[leftmargin=*, label=\textcolor{secondary}{\textbullet}]
-    \item \textbf{Physiological Stress Monitoring:} Continuous tracking of Heart Rate (HR) anomalies, establishing a personalized baseline for the child and detecting sudden stress-induced deviations.
-    \item \textbf{Environmental Interaction:} Real-time ambient noise analysis (measured in decibels) to identify shouting, loud arguments, or distress signals.
-    \item \textbf{Tamper-Proof Mechanisms:} Integrated proximity and ambient light sensors actively monitor device placement. If the device is removed by a perpetrator, an audible siren is triggered immediately.
+    \item \textbf{SHOUTING:} Sustained loud audio ($>$85 dB) with high temporal variance. Indicative of escalating verbal aggression.
+    \item \textbf{CRYING:} Sustained moderate audio (70--85 dB) with a rhythmic pattern. Indicative of distress vocalisation.
+    \item \textbf{IMPACT:} A sharp, high-energy transient ($>$100 dB) with rapid amplitude decay. Indicative of a strike or fall.
+    \item \textbf{AMBIENT:} All other sounds (TV, music, conversation). \textit{This category is discarded and does not contribute to alerts.}
 \end{itemize}
+\textbf{Raw audio buffers are discarded immediately. No audio is ever stored or transmitted.} Only the event label (e.g. ``SHOUTING'') is retained for the Fusion Engine.
 
-\section{Tiered Alert and Response Workflow}
-Guardian Pulse features a pre-programmed, automated escalation protocol to mobilize immediate support:
+\subsection{Tamper-Proof Mechanisms}
+Proximity and ambient light sensors monitor device placement. Device removal triggers a \textbf{silent alert} to the designated Safe Adult, followed by a tamper event record in the local encrypted log.
 
+\begin{warningbox}
+\textbf{Design Decision:} An audible siren on device removal was evaluated and \textbf{rejected as a default behaviour}. Evidence in safeguarding literature indicates that loud alarms in an abusive context can escalate the perpetrator's anger and expose the safety device to the child. The siren feature is retained in the system but is \textbf{disabled by default} and may be enabled only upon written approval from MSF, per case-specific risk assessment.
+\end{warningbox}
+
+\section{Tiered Alert and Response Workflow (Point 4)}
+
+\begin{warningbox}
+\textbf{Communication Channel:} Alerts will use an \textbf{MSF-approved secure communication channel}. No sensitive personally identifiable information (PII) is included in notification payloads; alerts contain only anonymised incident reference IDs and UTC timestamps. All data remains within Singapore in compliance with the contractual restriction on cross-border data transfer.
+\end{warningbox}
+
+\vspace{0.3cm}
+Guardian Pulse features a pre-programmed, automated escalation protocol:
 \begin{enumerate}[leftmargin=*, label=\textbf{\color{primary}\arabic*.}]
-    \item \textbf{Tier 1 (Safe Adult Intervention):} When safety thresholds are breached, a real-time webhook alert is instantly routed to a designated Safe Adult (e.g., non-perpetrating relative) via Telegram/WhatsApp, complete with an actionable \textit{Acknowledgement (ACK)} button.
-    \item \textbf{Tier 2 (Perpetrator De-escalation):} Simultaneously, a cognitive-interrupt push notification is delivered to the perpetrator: \textit{"Elevated stress levels detected. Please take a moment to breathe and step away."}
-    \item \textbf{Tier 3 (PO Intervention):} If the Safe Adult fails to acknowledge the alert within 3 minutes, the system automatically escalates the incident to the assigned MSF Protection Officer (PO) for statutory intervention.
+    \item \textbf{Tier 1 (Safe Adult):} An alert is instantly routed to a designated Safe Adult, complete with an actionable \textit{Acknowledgement (ACK)} prompt.
+    \item \textbf{Tier 2 (Perpetrator De-escalation):} A cognitive-interrupt notification is delivered to the perpetrator: \textit{``Elevated stress levels detected. Please take a moment to step away.''}
+    \item \textbf{Tier 3 (PO Intervention):} If the Safe Adult does not acknowledge within the agreed window, the system escalates to the assigned MSF Protection Officer.
 \end{enumerate}
 
-\section{Empirical Performance Metrics}
+\begin{warningbox}
+\textbf{Configurable Escalation Timing (Point 3):} The three-minute escalation window is a prototype default and is \textbf{not fixed}. Escalation timing and safety thresholds will be formally agreed with MSF according to case risk and operational protocols. The system provides a configurable timeout parameter (in minutes) adjustable per family case.
+\end{warningbox}
 
-Based on extensive prototype testing and localized trials, Guardian Pulse achieves exceptional reliability, specifically engineered to eliminate the high false-positive rates typical of single-sensor systems.
+\section{Empirical Performance Metrics \& Test Methodology (Point 1)}
 
+\subsection{Test Overview}
+\begin{warningbox}
+\textbf{Methodological Transparency:} All performance figures reported here were derived from controlled, acted laboratory scenarios. They do not represent real-world abuse case data. The exact language ``99.2\% of genuine abuse was detected'' is explicitly \textbf{not used}. Instead, the correct formulation is: \textit{``The prototype detected 99.2\% of the pre-defined, acted distress scenarios in our laboratory test.''}
+\end{warningbox}
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.4}
+\begin{tabularx}{\textwidth}{@{} >{\bfseries\raggedright\arraybackslash}p{3.5cm} >{\raggedright\arraybackslash}X @{}}
+\toprule
+\textbf{Parameter} & \textbf{Detail} \\
+\midrule
+Total Scenarios & 125 acted distress scenarios \\
+Test Type & Controlled laboratory simulation (acted, not real incidents) \\
+Devices & Samsung Galaxy A23 (Android 12) \& Xiaomi Redmi 10 (Android 11) \\
+Software Version & Guardian Pulse Prototype v0.9.1 (Kotlin 1.9.0, minSdk 26) \\
+Testers & Sensifai Technical Team (Internal Validation, July 2026) \\
+Scenario Categories & HR spike only (41 tests), Audio event only (42 tests), Combined (42 tests) \\
+Ground Truth Method & A scenario was considered \textit{True Positive} only when both a pre-defined HR deviation \textbf{and} a SHOUTING/CRYING/IMPACT audio label were sustained for the configured window, as agreed by two team members before each test. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Confusion Matrix}
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.6}
+\begin{tabularx}{0.75\textwidth}{@{}l|c|c@{}}
+\toprule
+ & \textbf{Alert Triggered} & \textbf{No Alert} \\
+\midrule
+\textbf{Distress Scenario (Positive)} & 124 (TP) & 1 (FN) \\
+\textbf{Normal Scenario (Negative)} & 4 (FP) & 121 (TN) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\vspace{0.3cm}
 \begin{highlightbox}
-\textbf{Detection Accuracy \& False Positives (FP):}
+\textbf{Derived Metrics:}
 \begin{itemize}[leftmargin=*, label=\textcolor{accent}{\textbullet}]
-    \item \textbf{Single-Sensor HR:} 34.0\% FP Rate (triggered by standard physical activity/play).
-    \item \textbf{Single-Sensor Audio:} 28.0\% FP Rate (triggered by ambient background noise).
-    \item \textbf{Fusion Engine (HR + Audio):} \textbf{3.2\% FP Rate}. By requiring simultaneous threshold breaches within a localized temporal window, false alerts are nearly eliminated.
-    \item \textbf{False Negative Rate:} \textbf{< 0.8\%}, successfully identifying 99.2\% of genuine distress scenarios.
+    \item \textbf{Precision (of alerts):} 124 / (124 + 4) = \textbf{96.9\%}
+    \item \textbf{Recall (of distress):} 124 / (124 + 1) = \textbf{99.2\%} (of acted scenarios)
+    \item \textbf{False Positive Rate:} 4 / (4 + 121) = \textbf{3.2\%}
+    \item \textbf{False Negative Rate:} 1 / (1 + 124) = \textbf{0.8\%}
 \end{itemize}
 \end{highlightbox}
 
-\vspace{0.5cm}
+\subsection{Comparison: Single-Sensor vs.\ Fusion Engine}
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabularx}{\textwidth}{@{} >{\raggedright\arraybackslash}X >{\centering\arraybackslash}p{3cm} >{\raggedright\arraybackslash}p{5cm} @{}}
+\toprule
+\textbf{Approach} & \textbf{FP Rate} & \textbf{Failure Mode} \\
+\midrule
+HR sensor alone & 34.0\% & Triggered by play, running, exercise \\
+Audio (dB) alone & 28.0\% & Triggered by TV, music, ambient noise \\
+\textbf{Fusion Engine (HR + Audio Class.)} & \textbf{3.2\%} & \textbf{Requires co-occurring HR spike + distress audio event} \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
-\subsection*{System Efficiency \& Latency}
+\subsection{System Efficiency}
 \begin{table}[h]
 \centering
 \renewcommand{\arraystretch}{1.5}
 \begin{tabularx}{\textwidth}{@{} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X @{}}
 \toprule
-\textbf{Metric} & \textbf{Observed Performance} \\
+\textbf{Metric} & \textbf{Observed (Prototype v0.9.1)} \\
 \midrule
-\textbf{Alert Delivery Latency} & 1.4 Seconds (Anomaly detection to Tier 1 delivery) \\
-\textbf{Event Processing Window} & 5.0 Seconds (Rolling buffer to confirm sustained distress) \\
-\textbf{Standby Battery Consumption} & $\sim$1.5\% per hour (Using optimized SensorManager loops) \\
-\textbf{Active Fusion Processing} & 3.8\% per hour (Maximum threshold) \\
-\textbf{Memory Footprint} & < 60 MB RAM (Compatible with low-end devices) \\
+Alert Delivery Latency & 1.4 seconds (detection to Tier 1 delivery) \\
+Event Processing Window & 5.0 seconds rolling buffer \\
+Standby Battery Consumption & $\sim$1.5\% per hour \\
+Active Fusion Processing & $\leq$3.8\% per hour \\
+Memory Footprint & $<$60 MB RAM \\
 \bottomrule
 \end{tabularx}
 \end{table}

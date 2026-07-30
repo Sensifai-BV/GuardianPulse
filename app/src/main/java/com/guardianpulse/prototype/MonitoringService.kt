@@ -430,8 +430,7 @@ class MonitoringService : Service(), SensorEventListener {
         proximity?.let { PrototypeState.updateProximity(it) }
         light?.let { PrototypeState.updateLight(it) }
         
-        // Define removal: Proximity > 3.0 (Far)
-        // Reduced sensitivity for phone testing, requiring 10 seconds of removal
+        // Define removal: Proximity > 3.0 (Far), sustained for 10 seconds
         val isRemoved = (proximity != null && proximity > 3.0f)
         
         if (isRemoved) {
@@ -440,11 +439,16 @@ class MonitoringService : Service(), SensorEventListener {
                 tamperStartTime = System.currentTimeMillis()
             } else {
                 val duration = System.currentTimeMillis() - tamperStartTime
-                if (duration > 10000L && !PrototypeState.isTampered.value) { // 10 seconds sustained
+                if (duration > 10000L && !PrototypeState.isTampered.value) {
                     PrototypeState.setTampered(true)
-                    Log.w("MonitoringService", "TAMPER ALERT TRIGGERED")
+                    Log.w("MonitoringService", "TAMPER ALERT TRIGGERED (Silent)")
+                    // POINT 2: Silent alert first — siren is optional and MSF-configurable only.
                     AlertEscalationManager.triggerTamperAlert()
-                    startAlarm()
+                    // Only sound siren if explicitly enabled by MSF-approved setting
+                    val settings = PrototypeState.thresholdSettings.value
+                    if (settings.sirenOnTamperEnabled) {
+                        startAlarm()
+                    }
                 }
             }
         } else {

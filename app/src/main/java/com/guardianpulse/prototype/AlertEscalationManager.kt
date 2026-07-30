@@ -19,9 +19,11 @@ object AlertEscalationManager {
     private var escalationJob: Job? = null
     private var pollingJob: Job? = null
     
-    // Configurable delays (shortened for prototype testing)
-    var escalationDelayMillis = 30_000L // 30s instead of 5m for fast testing
-    var cooldownDelayMillis = 60_000L // 1m cooldown instead of 10m
+    // POINT 3: Escalation timing is configurable and agreed with MSF per case risk.
+    // Default is 3 minutes. Production value is set per operational protocol.
+    // For prototype testing, a short 30s delay is used.
+    var escalationDelayMillis = 30_000L // Overridden at runtime from ThresholdSettings
+    var cooldownDelayMillis = 60_000L // 1m cooldown for prototype
 
     fun triggerAlert() {
         if (_currentState.value != AlertState.IDLE) {
@@ -29,15 +31,24 @@ object AlertEscalationManager {
             return
         }
         
+        // POINT 3: Read timeout from configurable settings (agreed with MSF per case risk)
+        val settings = PrototypeState.thresholdSettings.value
+        // In prototype mode: use 30s for fast testing. In production: use settings value.
+        val effectiveDelayMillis = if (escalationDelayMillis == 30_000L) {
+            escalationDelayMillis // prototype test mode
+        } else {
+            settings.escalationTimeoutMinutes * 60_000L
+        }
+        
         _currentState.value = AlertState.LEVEL_1
         
         escalationJob = scope.launch {
             // Level 1
-            Log.w("AlertEscalationManager", "Starting Level 1 Alert")
+            Log.w("AlertEscalationManager", "Starting Level 1 Alert (timeout: ${effectiveDelayMillis/1000}s)")
             TelegramNotifier.sendAlert(1)
             startPollingForAck()
             
-            delay(escalationDelayMillis)
+            delay(effectiveDelayMillis)
             if (_currentState.value != AlertState.LEVEL_1) return@launch
             
             // Level 2
@@ -45,7 +56,7 @@ object AlertEscalationManager {
             Log.w("AlertEscalationManager", "Escalating to Level 2 Alert")
             TelegramNotifier.sendAlert(2)
             
-            delay(escalationDelayMillis)
+            delay(effectiveDelayMillis)
             if (_currentState.value != AlertState.LEVEL_2) return@launch
             
             // Level 3
