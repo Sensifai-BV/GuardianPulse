@@ -53,16 +53,23 @@
 Continuous tracking of Heart Rate (HR), establishing a personalised baseline for each child and detecting sustained, stress-induced deviations. A single elevated reading is never sufficient to trigger an alert; the system requires sustained anomaly over a configurable time window.
 
 \subsection{On-Device Audio Event Classification (Point 5)}
-\begin{warningbox}
-\textbf{Important:} Measuring only decibel levels is insufficient. A television, children playing, or a dropped object can all reach high decibel levels. Guardian Pulse therefore classifies audio into event categories on-device, using a rule-based classifier (prototype) designed to be replaced by a full YAMNet/openSMILE model in production.
-\end{warningbox}
+\begin{highlightbox}
+\textbf{Sensifai Custom AER Inference Engine:} Measuring only decibel levels is insufficient. A television, children playing, or a dropped object can all reach high decibel levels. Guardian Pulse features a \textbf{proprietary, lightweight Multi-Layer Perceptron (MLP) Neural Network} trained on the ESC-50 and RAVDESS datasets.
+
+Crucially, inference runs entirely in \textbf{pure Kotlin}, avoiding heavy dependencies like TensorFlow. The custom model extracts Mel-Frequency Cepstral Coefficients (MFCC) and performs matrix multiplication locally. This ensures:
+\begin{itemize}[leftmargin=*, label=\textcolor{secondary}{\textbullet}]
+    \item \textbf{Zero Binary Bloat:} Adds less than 150 KB to the APK size.
+    \item \textbf{100\% On-Device Privacy:} No audio leaves the device; raw buffers are discarded immediately.
+    \item \textbf{Sensifai IP:} An independent ML pipeline not reliant on third-party models.
+\end{itemize}
+\end{highlightbox}
 
 \vspace{0.3cm}
-The on-device Audio Event Classifier analyses the amplitude and rate-of-change of ambient sound in real-time and assigns one of the following labels:
+The on-device Audio Event Classifier analyses features (MFCC) in real-time and assigns one of the following labels:
 \begin{itemize}[leftmargin=*, label=\textcolor{secondary}{\textbullet}]
-    \item \textbf{SHOUTING:} Sustained loud audio ($>$85 dB) with high temporal variance. Indicative of escalating verbal aggression.
-    \item \textbf{CRYING:} Sustained moderate audio (70--85 dB) with a rhythmic pattern. Indicative of distress vocalisation.
-    \item \textbf{IMPACT:} A sharp, high-energy transient ($>$100 dB) with rapid amplitude decay. Indicative of a strike or fall.
+    \item \textbf{SHOUTING:} Sustained elevated voice. Trained via RAVDESS emotional speech (angry/fearful) augmented data.
+    \item \textbf{CRYING:} Distress vocalisation pattern. Trained via ESC-50 infant cry samples.
+    \item \textbf{IMPACT:} A sharp, high-energy transient. Trained via ESC-50 glass breaking, knocking, and fireworks samples.
     \item \textbf{AMBIENT:} All other sounds (TV, music, conversation). \textit{This category is discarded and does not contribute to alerts.}
 \end{itemize}
 \textbf{Raw audio buffers are discarded immediately. No audio is ever stored or transmitted.} Only the event label (e.g. ``SHOUTING'') is retained for the Fusion Engine.

@@ -53,6 +53,9 @@ class MonitoringService : Service(), SensorEventListener {
     private var mockAudioJob: Job? = null
     private var mockTamperJob: Job? = null
     
+    private lateinit var fusionEngine: FusionEngine
+    private lateinit var aerEngine: SensifaiAER
+    
     private var audioRecord: AudioRecord? = null
     private var calibrationJob: Job? = null
     
@@ -93,8 +96,6 @@ class MonitoringService : Service(), SensorEventListener {
     private var audioCalibrationBuffer = mutableListOf<Float>()
     
     private var alarmPlayer: MediaPlayer? = null
-    
-    private val fusionEngine = FusionEngine()
 
     override fun onCreate() {
         super.onCreate()
@@ -106,6 +107,10 @@ class MonitoringService : Service(), SensorEventListener {
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT)
         
         database = AppDatabase.getDatabase(this)
+        
+        // Initialize AER Engine and Fusion Engine
+        aerEngine = SensifaiAER(this)
+        fusionEngine = FusionEngine(aerEngine)
         
         serviceScope.launch {
             PrototypeState.mockMode.collect { isMock ->
